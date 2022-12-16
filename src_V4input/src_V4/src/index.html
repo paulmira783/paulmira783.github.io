@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>3DPaint</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8;">
+	<meta name="viewport" content=" maximum-scale=1, user-scalable=0">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+</head>
+
+<body id="body">
+	<div class="container">
+		<!-- <div id="loading">LOADING</div> -->
+		<div id="info" style="display:none !important ;">
+			<div>
+				<div id="samples"></div>
+			</div>
+
+			<br><br>
+			<div>
+				<button id="render-button">Render</button>
+			</div>
+		</div>
+		<div class="interface" style="display:none !important ;">
+			<div class="submeshes"></div>
+			<div id="submenu" style="display: none;">
+				<i class="fa fa-text-height"></i>
+				<i class="fa fa-picture-o" aria-hidden="true"></i>
+				<i class="fa fa-paint-brush" aria-hidden="true"></i>
+				<i class="fa fa-download" aria-hidden="true"></i>
+			</div>
+			<div id="mobile-submenu">
+				<i class="fa fa-text-height"></i>
+				<i class="fa fa-picture-o" aria-hidden="true"></i>
+			</div>
+
+
+		</div>
+		<div id="panel">
+			<div id="grid">
+				<div>
+					Text: <input id="text-input" type="text">
+					<p>
+					<div>
+						ADD
+					</div>
+					Font: <select id="font-select">
+						<option value="Arial">Arial</option>
+						<option value="Times New Roman">Times New Roman</option>
+						<option value="Comic Sans MS">Comic Sans MS</option>
+						<option value="Courier New">Courier New</option>
+						<option value="Impact">Impact</option>
+						<option value="Georgia">Georgia</option>
+						<option value="Lucida Console">Lucida Console</option>
+						<option value="Lucida Sans Unicode">Lucida Sans Unicode</option>
+						<option value="Palatino Linotype">Palatino Linotype</option>
+						<option value="Tahoma">Tahoma</option>
+
+					</select><br><br>
+					Color: <br><input id="text-color-input" type="color"><br><br>
+					Name:<div id="material-name"></div>
+					<br>
+					<div>
+						Rotation
+						<input type="range" id="text-rotation" min="0" max="Math.PI * 2" value="0"><br><br>
+					</div>
+					<div>
+						Size
+						<input type="range" id="text-size" min="10" max="100" value="15"><br><br>
+					</div>
+
+					<button id="delete-button">Delete</button>
+					<br><br>
+				</div>
+				<!-- <canvas height="140" width="240" id="canvas" style="position: absolute; z-index: 1; "></canvas> -->
+
+				<img draggable="false" src="./img/grid.jpg"
+					style="width:180px; user-select: none; height: 180px; position:relative; z-index: 0; object-fit: cover;"
+					alt="" />
+			</div>
+			<div id="color-picker">
+				<input id="material-color-input" aria-label="hi" type="color">
+			</div>
+			<div id="image-editor">
+				<div>
+					<input style="width: 200px" type="file" id="upload" id="avatar" name="avatar"
+						accept="image/png, image/jpeg">
+					<br><br>
+					<br>
+					<br><br>
+					Name:<div id="material-name-2"></div>
+					<br>
+					<div>
+						Rotation
+						<input type="range" id="text-rotation" min="0" max="Math.PI * 2" value="0"><br><br>
+					</div>
+					<div>
+						Size
+						<input type="range" id="text-size" min="0.1" max="2" value="1" step="0.01"><br><br>
+					</div>
+					<button id="delete-button">Delete</button>
+					<br><br>
+					<div id="carousel">
+						<img src="./img/1.png" />
+						<img src="./img/2.png" />
+						<img src="./img/3.png" />
+						<img src="./img/4.png" />
+						<img src="./img/5.png" />
+						<img src="./img/6.png" />
+					</div>
+
+				</div>
+				<img draggable="false" src="./img/grid.jpg"
+					style="width:180px; user-select: none; height: 180px; position:relative; z-index: 0; object-fit: cover;"
+					alt="" />
+			</div>
+		</div>
+	</div>
+
+
+	<script>
+		window.MODEL_LIST = {
+
+			'X-Wing': {
+				url: 'https://raw.githubusercontent.com/mrdoob/three.js/dev/examples/models/ldraw/officialLibrary/models/7140-1-X-wingFighter.mpd_Packed.mpd',
+			},
+
+			'UCS AT-ST': {
+				url: 'https://raw.githubusercontent.com/mrdoob/three.js/dev/examples/models/ldraw/officialLibrary/models/10174-1-ImperialAT-ST-UCS.mpd_Packed.mpd',
+			},
+
+			'Death Star': {
+				url: 'https://raw.githubusercontent.com/gkjohnson/ldraw-parts-library/master/complete/ldraw/10143-1 - Death Star II.mpd',
+				rotation: [Math.PI, Math.PI + 1.75 * Math.PI / 4, 0],
+			},
+
+			'Blacksmith': {
+				url: 'https://raw.githubusercontent.com/gkjohnson/ldraw-parts-library/master/complete/ldraw/21325 - Medieval Blacksmith.mpd',
+			},
+
+			'Tree House': {
+				url: 'https://raw.githubusercontent.com/gkjohnson/ldraw-parts-library/master/complete/ldraw/21318 - Tree House.mpd',
+			},
+
+			'Lunar Vehicle': {
+				url: 'https://raw.githubusercontent.com/mrdoob/three.js/dev/examples/models/ldraw/officialLibrary/models/1621-1-LunarMPVVehicle.mpd_Packed.mpd',
+				rotation: [Math.PI, - Math.PI / 2, 0],
+			},
+
+			'Cafe Corner': {
+				url: 'https://raw.githubusercontent.com/gkjohnson/ldraw-parts-library/master/complete/ldraw/10182-1 - Cafe Corner.mpd',
+			},
+
+			'Scorpion Pyramid': {
+				url: 'https://raw.githubusercontent.com/gkjohnson/ldraw-parts-library/master/complete/ldraw/7327-1 - Scorpion Pyramid.mpd',
+			},
+
+		};
+
+		for (const key in window.MODEL_LIST) {
+
+			const info = window.MODEL_LIST[key];
+			info.credit = 'Model courtesy of the <a href="https://omr.ldraw.org/">LDraw Official Model Repository and Parts Library</a>.';
+
+		}
+	</script>
+
+</body>
+
+
+
+<script>
+	timeFunction()
+	function timeFunction() {
+    setTimeout(function(){ const myElement = document.getElementById('gui').children[1];
+    for (const child of myElement.children) {
+        child.style.display="none";
+    }
+    document.getElementById("gui").children[1].children[2].style.display="block";
+    document.getElementById("lil-gui-name-4").style.display="none" }, 1400);
+}
+</script>
+
+
+</html>
